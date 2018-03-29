@@ -5,9 +5,10 @@
 
 [![Under Development](https://img.shields.io/badge/under-development-orange.svg)](https://github.com/cez-aug/github-project-boilerplate) [![Public Domain](https://img.shields.io/badge/public-domain-lightgrey.svg)](https://creativecommons.org/publicdomain/zero/1.0/) [![Travis](https://img.shields.io/travis/cez-aug/github-project-boilerplate.svg)](http://github.com/cez-aug/github-project-boilerplate)
 
+<br>
+
 > Tally is a system we built in order to help keep track of how many points our branch members have acquired through attending meetings, social events, and other "tally" based things. It integrates with our team's Slack and allows users as well as officers to see how many points students have acquired.
 
-<br>
 <br>
 
 ## Installing 💿
