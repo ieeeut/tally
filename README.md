@@ -7,7 +7,7 @@
 
 <br>
 
-> Tally is a system we built in order to help keep track of how many points our branch members have acquired through attending meetings, social events, and other "tally" based things. It integrates with our team's Slack and allows users as well as officers to see how many points students have acquired.
+Tally is a system we built in order to help keep track of how many points our branch members have acquired through attending meetings, social events, and other "tally" based things. It integrates with our team's Slack and allows users as well as officers to see how many points students have acquired.
 
 <br>
 
@@ -29,7 +29,7 @@ $ yarn start
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
-> or if you like it simple:
+or if you like it simple:
 
 1. `Fork` this repository
 2. Create a `branch`
