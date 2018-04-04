@@ -34,7 +34,7 @@ class Header extends React.Component {
     const leftNav = (this.props.user !== undefined && this.props.user.admin) ? (
       <ul className="nav navbar-nav">
         <li><IndexLink to="/" activeStyle={active}>Home</IndexLink></li>
-        <li><Link to="/admin" activeStyle={active}>Admin</Link></li>
+        <li><Link to="/users" activeStyle={active}>Users</Link></li>
       </ul>
     ) : (
       <ul className="nav navbar-nav">

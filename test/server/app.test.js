@@ -9,10 +9,26 @@ describe('GET /', function() {
   });
 });
 
-describe('GET /contact', function() {
+describe('GET /signup', function() {
   it('should render ok', function(done) {
     request(server)
-      .get('/contact')
+      .get('/signup')
+      .expect(200, done);
+  });
+});
+
+describe('GET /login', function() {
+  it('should render ok', function(done) {
+    request(server)
+      .get('/login')
+      .expect(200, done);
+  });
+});
+
+describe('GET /forgot', function() {
+  it('should render ok', function(done) {
+    request(server)
+      .get('/forgot')
       .expect(200, done);
   });
 });

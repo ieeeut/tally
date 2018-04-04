@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import Messages from './Messages';
 import { checkin } from '../actions/home';
+import { getUsers } from '../actions/admin';
 
 class Home extends React.Component {
 
@@ -24,7 +25,7 @@ class Home extends React.Component {
       <div className="container-fluid">
         <Messages messages={this.props.messages}/>
         <div className="row">
-          <div className="col-sm-4">
+          <div className="col-sm-4 col-sm-offset-4">
             <div className="panel">
               <div className="panel-body">
                 <form onSubmit={this.handleCheckin.bind(this)}>

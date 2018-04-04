@@ -215,7 +215,7 @@ exports.forgotPost = (req, res, next) => {
       const mailOptions = {
         to: user.email,
         from: 'support@yourdomain.com',
-        subject: '✔ Reset your password on Mega Boilerplate',
+        subject: '✔ Reset your password on Tally',
         text: 'You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n' +
         'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
         'http://' + req.headers.host + '/reset/' + token + '\n\n' +
@@ -268,7 +268,7 @@ exports.resetPost = (req, res, next) => {
       const mailOptions = {
         from: 'support@yourdomain.com',
         to: user.email,
-        subject: 'Your Mega Boilerplate password has been changed',
+        subject: 'Your Tally password has been changed',
         text: 'Hello,\n\n' +
         'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
       };
@@ -277,4 +277,16 @@ exports.resetPost = (req, res, next) => {
       });
     }
   ]);
+};
+
+/**
+ * GET /api/users
+ */
+exports.getAllUsers = (req, res, next) => {
+  User.find({}, (err, users) => {
+
+    if (err) return res.status(400).send(err);
+
+    return res.send({ users: users, msg: 'Successfully loaded users!' });
+  });
 };

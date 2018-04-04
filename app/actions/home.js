@@ -1,4 +1,4 @@
-export function  checkin(eid) {
+export function checkin(eid) {
   return (dispatch) => {
     dispatch({
       type: 'CLEAR_MESSAGES'

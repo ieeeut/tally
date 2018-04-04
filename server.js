@@ -72,6 +72,7 @@ app.use((req, res, next) => {
   }
 });
 
+// API
 app.put('/account', userController.ensureAuthenticated, userController.accountPut);
 app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
 app.post('/signup', userController.signupPost);
@@ -79,11 +80,13 @@ app.post('/login', userController.loginPost);
 app.post('/forgot', userController.forgotPost);
 app.post('/checkin', userController.checkin);
 app.post('/reset/:token', userController.resetPost);
+app.get('/api/users', userController.getAllUsers)
 
 // React server rendering
 app.use((req, res) => {
   const initialState = {
     auth: { token: req.cookies.token, user: req.user },
+    admin: { userList: [] },
     messages: {}
   };
 

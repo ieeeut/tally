@@ -58,9 +58,6 @@ class Signup extends React.Component {
                 <label htmlFor="slackUsername">Slack Username (optional)</label>
                 <input type="text" name="slackUsername" id="slackUsername" placeholder="Slack Username" className="form-control" value={this.state.slackUsername} onChange={this.handleChange.bind(this)}/>
               </div>
-              <div className="form-group">
-                <small className="text-muted">By signing up, you agree to the <Link to="/">Terms of Service</Link>.</small>
-              </div>
               <button type="submit" className="btn btn-success">Create an account</button>
             </form>
           </div>

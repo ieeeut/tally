@@ -7,6 +7,7 @@ export default function messages(state = {}, action) {
     case 'FORGOT_PASSWORD_FAILURE':
     case 'RESET_PASSWORD_FAILURE':
     case 'CHECKIN_FAILURE':
+    case 'GET_USERS_FAILURE':
       return {
         error: action.messages
       };
