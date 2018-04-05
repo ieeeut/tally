@@ -58,7 +58,7 @@ class Signup extends React.Component {
                 <label htmlFor="slackUsername">Slack Username (optional)</label>
                 <input type="text" name="slackUsername" id="slackUsername" placeholder="Slack Username" className="form-control" value={this.state.slackUsername} onChange={this.handleChange.bind(this)}/>
               </div>
-              <button type="submit" className="btn btn-success">Create an account</button>
+              <button type="submit" className="btn btn-primary">Create an account</button>
             </form>
           </div>
         </div>

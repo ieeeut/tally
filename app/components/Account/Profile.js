@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { updateProfile, changePassword, deleteAccount } from '../../actions/auth';
 import Messages from '../Messages';
+import swal from 'sweetalert';
 
 class Profile extends React.Component {
   constructor(props) {
@@ -35,7 +36,20 @@ class Profile extends React.Component {
 
   handleDeleteAccount(event) {
     event.preventDefault();
-    this.props.dispatch(deleteAccount(this.props.token));
+    swal({
+      title: "Are you sure you would like to delete your account?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+        swal("Poof! Your account has been deleted!", {
+          icon: "success",
+        }).then(this.props.dispatch(deleteAccount(this.props.token)));
+      }
+    });
   }
 
   render() {
@@ -78,7 +92,7 @@ class Profile extends React.Component {
               </div>
               <div className="form-group">
                 <div className="col-sm-offset-3 col-sm-4">
-                  <button type="submit" className="btn btn-success">Update Profile</button>
+                  <button type="submit" className="btn btn-primary">Update Profile</button>
                 </div>
               </div>
             </form>
@@ -120,7 +134,7 @@ class Profile extends React.Component {
               </div>
               <div className="form-group">
                 <div className="col-sm-4 col-sm-offset-3">
-                  <button type="submit" className="btn btn-success">Change Password</button>
+                  <button type="submit" className="btn btn-primary">Change Password</button>
                 </div>
               </div>
             </form>

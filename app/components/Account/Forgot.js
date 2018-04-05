@@ -31,7 +31,7 @@ class Forgot extends React.Component {
                 <label htmlFor="email">Email</label>
                 <input type="email" name="email" id="email" placeholder="Email" className="form-control" autoFocus value={this.state.email} onChange={this.handleChange.bind(this)}/>
               </div>
-              <button type="submit" className="btn btn-success">Reset Password</button>
+              <button type="submit" className="btn btn-primary">Reset Password</button>
             </form>
           </div>
         </div>

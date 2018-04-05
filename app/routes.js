@@ -3,6 +3,7 @@ import { IndexRoute, Route } from 'react-router';
 import App from './components/App';
 import Home from './components/Home';
 import Users from './components/Admin/Users';
+import Settings from './components/Admin/Settings';
 import NotFound from './components/NotFound';
 import Login from './components/Account/Login';
 import Signup from './components/Account/Signup';
@@ -41,9 +42,10 @@ export default function getRoutes(store) {
       <Route path="/login" component={Login} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
       <Route path="/signup" component={Signup} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
       <Route path="/account" component={Profile} onEnter={ensureAuthenticated} onLeave={clearMessages}/>
-      <Route path="/users" component={Users} onEnter={ensureAuthorized} onLeave={clearMessages}/>
       <Route path="/forgot" component={Forgot} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
       <Route path='/reset/:token' component={Reset} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
+      <Route path="/users" component={Users} onEnter={ensureAuthorized} onLeave={clearMessages}/>
+      <Route path="/settings" component={Settings} onEnter={ensureAuthorized} onLeave={clearMessages}/>
       <Route path="*" component={NotFound} onLeave={clearMessages}/>
     </Route>
   );

@@ -36,7 +36,7 @@ class Login extends React.Component {
                 <input type="password" name="password" id="password" placeholder="Password" className="form-control" value={this.state.password} onChange={this.handleChange.bind(this)}/>
               </div>
               <div className="form-group"><Link to="/forgot"><strong>Forgot your password?</strong></Link></div>
-              <button type="submit" className="btn btn-success">Log in</button>
+              <button type="submit" className="btn btn-primary">Log in</button>
             </form>
           </div>
         </div>

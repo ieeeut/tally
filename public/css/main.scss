@@ -1,12 +1,13 @@
 $body-bg: #f4f4f4;
 $line-height-base: 1.57142857;
-$link-color: #1d7cf4;
+$link-color: #6D51B6;
 $link-hover-decoration: none;
 
+$brand-primary: #6D51B6;
 $brand-success: #29b35b;
 $brand-danger: #b61b17;
 
-$font-family-base: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-base: "Roboto", sans-serif;
 $headings-font-weight: 600;
 
 $alert-info-border: #31708f;
@@ -29,7 +30,6 @@ $navbar-default-link-active-color: #262626;
 $panel-heading-padding: 20px 30px;
 $panel-body-padding: 30px;
 
-@import url("//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CRaleway:100,300,600,700,800");
 @import "vendor/bootstrap";
 @import "vendor/font-awesome/font-awesome";
 
@@ -39,6 +39,7 @@ $panel-body-padding: 30px;
 html {
   position: relative;
   min-height: 100%;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -119,6 +120,12 @@ footer {
   border-radius: 3px;
   &:focus {
     outline: 0 !important;
+  }
+}
+
+.btn-primary {
+  &:active {
+    background: $brand-primary
   }
 }
 

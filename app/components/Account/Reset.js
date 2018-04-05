@@ -35,7 +35,7 @@ class Reset extends React.Component {
                 <input type="password" name="confirm" id="confirm" placeholder="Confirm password" className="form-control" value={this.state.confirm} onChange={this.handleChange.bind(this)}/>
               </div>
               <div className="form-group">
-                <button type="submit" className="btn btn-success">Change Password</button>
+                <button type="submit" className="btn btn-primary">Change Password</button>
               </div>
             </form>
           </div>
@@ -50,4 +50,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(Reset);
-

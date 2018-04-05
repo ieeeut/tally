@@ -1,5 +1,22 @@
 {
   "name": "Tally",
   "description": "A check-in and member point aggregation system",
-  "repository": "https://github.com/ieeeut/tally"
+  "repository": "https://github.com/ieeeut/tally",
+  "env": {
+    "NODE_ENV": {
+      "description": "dev or production",
+      "value": "dev"
+    },
+    "TOKEN_SECRET": {
+      "description": "Long random string used to verify JWT tokens for user authentication",
+      "generator": "secret"
+    },
+    "ROOT_URL": {
+      "description": "Root URL for your registration system",
+      "value": "http://ieeeut-tally.herokuapp.com:3000"
+    }
+  },
+  "addons": [
+    "mongolab"
+  ]
 }

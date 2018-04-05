@@ -34,7 +34,7 @@ class Home extends React.Component {
                     <label htmlFor="eid">EID</label>
                     <input type="text" name="eid" id="eid" placeholder="EID" autoFocus className="form-control" value={this.state.eid} onChange={this.handleChange.bind(this)}/>
                   </div>
-                  <button type="submit" className="btn btn-success">Submit</button>
+                  <button type="submit" className="btn btn-primary">Submit</button>
                 </form>
               </div>
             </div>

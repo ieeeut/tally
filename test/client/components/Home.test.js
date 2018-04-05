@@ -1,8 +1,14 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { shallow } from 'enzyme';
 import { expect } from 'chai';
+
+/* Configure enzyme */
+import Enzyme from 'enzyme';
+import Adapter from 'enzyme-adapter-react-15.4';
+import { shallow } from 'enzyme';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 import Home from '../../../app/components/Home';
 import Messages from '../../../app/components/Messages';
