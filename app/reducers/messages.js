@@ -8,6 +8,8 @@ export default function messages(state = {}, action) {
     case 'RESET_PASSWORD_FAILURE':
     case 'CHECKIN_FAILURE':
     case 'GET_USERS_FAILURE':
+    case 'GET_SETTINGS_FAILURE':
+    case 'UPDATE_SETTINGS_FAILURE':
       return {
         error: action.messages
       };
@@ -16,6 +18,7 @@ export default function messages(state = {}, action) {
     case 'RESET_PASSWORD_SUCCESS':
     case 'CONTACT_FORM_SUCCESS':
     case 'CHECKIN_SUCCESS':
+    case 'UPDATE_SETTINGS_SUCCESS':
       return {
         success: action.messages
       };

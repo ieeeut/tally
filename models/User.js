@@ -4,17 +4,24 @@ const mongoose = require('mongoose');
 
 const schemaOptions = {
   timestamps: true,
+  usePushEach: true,
   toJSON: {
     virtuals: true
   }
 };
 
+const checkin = {
+  event: String,
+  timestamp: Date
+}
+
 const userSchema = new mongoose.Schema({
-  email: { type: String, unique: true},
+  email: { type: String, unique: true, required: true },
   eid: { type: String, unique: true},
   admin: Boolean,
-  checkins: Number,
-  password: String,
+  checkins: [checkin],
+  meetingPoints: Number,
+  password: { type: String, required: true },
   passwordResetToken: String,
   passwordResetExpires: Date,
   firstName: String,

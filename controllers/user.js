@@ -6,11 +6,11 @@ const moment = require('moment');
 const request = require('request');
 const qs = require('querystring');
 const User = require('../models/User');
+const Settings = require('../models/Settings');
 
 /**
  * Helper boi, generates a token given a user object
  */
-
 const generateToken = (user) => {
   const payload = {
     iss: 'tally.ieeeut.org',
@@ -31,6 +31,7 @@ exports.ensureAuthenticated = (req, res, next) => {
     res.status(401).send({ msg: 'Unauthorized' });
   }
 };
+
   /**
    * POST /login
    * Sign in with email and password
@@ -84,7 +85,7 @@ exports.signupPost = (req, res, next) => {
       eid: req.body.eid,
       email: req.body.email,
       password: req.body.password,
-      checkins: 0,
+      meetingPoints: 0,
       admin: false,
       firstName: req.body.firstName || '',
       lastName: req.body.lastName || '',
@@ -106,21 +107,59 @@ exports.checkin = (req, res, next) => {
 
   if (err) return res.status(400).send(err);
 
-  User.findOne({ eid: req.body.eid }, (err, user) => {
+  Settings.findOne({}, (err, settings) => {
 
     if (err) return res.status(400).send(err);
 
-    if (user === null) return res.status(400).send({ msg: 'We do not have a previous record of the eid ' + req.body.eid + ' please create an account.' });
+    if (!settings.meetingOpen && !settings.socialOpen) return res.status(400).send({ msg: 'There is no meeting or social open at the moment.' });
 
-    if (user.admin) return res.status(400).send({ msg: 'Silly officer, you can\'t sign in at meetings!' });
+    User.findOne({ eid: req.body.eid }, (err, user) => {
 
-    user.checkins += 1;
-    user.save((err) => {
-      console.log(err);
-      if (err) { return res.status(400).send(err); }
-      return res.send({ user: user, msg: 'Success! You are checked in for meeting. You have checked in ' + user.checkins + ' time(s).' });
+      if (err) return res.status(400).send(err);
+
+      if (user === null) return res.status(400).send({ msg: 'We do not have a previous record of the eid ' + req.body.eid + ' please create an account.' });
+
+      if (user.admin) return res.status(400).send({ msg: 'Silly officer, you can\'t sign in at meetings!' });
+
+      for (let checkin of user.checkins) {
+        if (moment(checkin.timestamp) > moment().subtract(3, 'hours')) {
+          return res.status(400).send({ msg: 'You have already checked in for this meeting' });
+        }
+      }
+
+      if (settings.meetingOpen) {
+        user.checkins.push({
+          event: 'meeting',
+          timestamp: moment()
+        });
+      } else {
+        user.checkins.push({
+          event: 'social',
+          timestamp: moment()
+        });
+      }
+
+      var points = 0;
+
+      for (let checkin of user.checkins) {
+        if (checkin.event == "meeting") {
+          points += settings.meetingPoints;
+        }
+        else {
+          points += settings.socialPoints;
+        }
+      }
+
+      user.meetingPoints = points;
+
+      user.save((err) => {
+        console.log(err);
+        if (err) { return res.status(400).send(err); }
+        return res.send({ user: user, msg: 'Success! You are checked in for meeting. You have ' + user.meetingPoints + ' spark points.' });
+      });
     });
   });
+
 };
 
 /**
@@ -287,6 +326,6 @@ exports.getAllUsers = (req, res, next) => {
 
     if (err) return res.status(400).send(err);
 
-    return res.send({ users: users, msg: 'Successfully loaded users!' });
+    return res.send({ users: users });
   });
 };

@@ -27,6 +27,7 @@ const User = require('./models/User');
 
 // Controllers
 const userController = require('./controllers/user');
+const settingsController = require('./controllers/settings');
 
 // React and Server-Side Rendering
 const routes = require('./app/routes');
@@ -35,11 +36,15 @@ const configureStore = require('./app/store/configureStore').default;
 const app = express();
 
 
-mongoose.connect(process.env.MONGODB);
+mongoose.connect(process.env.MONGODB || process.env.MONGODB_URI || "mongodb://localhost:27017/tally");
 mongoose.connection.on('error', () => {
   console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
   process.exit(1);
 });
+
+// Database Init
+const startConfig = require('./config/start');
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.set('port', process.env.PORT || 3000);
@@ -80,7 +85,11 @@ app.post('/login', userController.loginPost);
 app.post('/forgot', userController.forgotPost);
 app.post('/checkin', userController.checkin);
 app.post('/reset/:token', userController.resetPost);
-app.get('/api/users', userController.getAllUsers)
+app.get('/api/users', userController.getAllUsers);
+app.put('/api/settings', settingsController.settingsPut);
+app.get('/api/settings', settingsController.settingsGet);
+app.post('/api/settings', settingsController.settingsPost);
+app.delete('/api/settings', settingsController.settingsDelete);
 
 // React server rendering
 app.use((req, res) => {

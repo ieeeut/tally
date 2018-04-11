@@ -13,7 +13,7 @@ class Profile extends React.Component {
       firstName: props.user.firstName || '',
       lastName: props.user.lastName || '',
       slackUsername: props.user.slackUsername || '',
-      checkins: props.user.checkins || 0,
+      meetingPoints: props.user.meetingPoints || 0,
       admin: props.user.admin || false,
       password: '',
       confirm: ''
@@ -104,13 +104,13 @@ class Profile extends React.Component {
               <thead>
                 <tr>
                   <th>Admin</th>
-                  <th>Checkins</th>
+                  <th>Points from Meetings</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>{this.state.admin.toString()}</td>
-                  <td>{this.state.checkins}</td>
+                  <td>{this.state.meetingPoints}</td>
                 </tr>
               </tbody>
             </table>

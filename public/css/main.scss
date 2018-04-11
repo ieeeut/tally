@@ -19,13 +19,13 @@ $alert-danger-text: #b61b17;
 $alert-danger-bg: #ffcdd2;
 
 $navbar-height: 56px;
-$navbar-default-bg: #fff;
+  $navbar-default-bg: #fff;
 $navbar-default-border: #e0e0e0;
 $navbar-default-color: #757575;
-$navbar-default-link-color: #262626;
+$navbar-default-link-color: #4c555a;
 $navbar-default-link-hover-bg: transparent;
 $navbar-default-link-active-bg: transparent;
-$navbar-default-link-active-color: #262626;
+$navbar-default-link-active-color: #6D51B6;
 
 $panel-heading-padding: 20px 30px;
 $panel-body-padding: 30px;
@@ -44,6 +44,7 @@ html {
 
 body {
   margin-bottom: 44px;
+  color: #4c555a;
 }
 
 footer {
@@ -98,13 +99,24 @@ footer {
 
 .panel-body {
   h1, h2, h3, h4, h5, h6 {
+    color: #4c555a;
     margin-top: 0;
   }
 }
 
 .panel-title {
   font-size: 18px;
-  color: #424242;
+  color: #4c555a;
+}
+
+// Labels
+// -------------------------
+.label {
+  color: #4c555a;
+}
+
+legend {
+  color: #4c555a;
 }
 
 // Buttons
@@ -163,13 +175,14 @@ textarea {
 .form-group > label {
   text-transform: uppercase;
   font-size: 13px;
+  color: #4c555a;
 }
 
 .hr-title {
   height: auto;
   margin-top: 20px;
   border-top: 1px solid;
-  color: #bbb;
+  color: #4c555a;
   font-size: 16px;
   text-align: center;
   line-height: 20px;

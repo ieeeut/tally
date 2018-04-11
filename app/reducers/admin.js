@@ -1,5 +1,6 @@
 const initialState = {
-  userList: []
+  userList: [],
+  settings: {}
 };
 
 export default function admin(state = initialState, action) {
@@ -10,6 +11,12 @@ export default function admin(state = initialState, action) {
     case 'GET_USERS_SUCCESS':
       return Object.assign({}, state, {
         userList: action.users
+      });
+    case 'GET_SETTINGS_SUCCESS':
+    case 'OPEN_CHECKIN_SUCCESS':
+    case 'CLOSE_CHECKIN_SUCCESS':
+      return Object.assign({}, state, {
+        settings: action.settings
       });
     default:
       return state;

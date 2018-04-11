@@ -5,6 +5,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getUsers = getUsers;
+exports.updateSettings = updateSettings;
+exports.getSettings = getSettings;
+exports.openCheckin = openCheckin;
+exports.closeCheckin = closeCheckin;
 function getUsers() {
   return function (dispatch) {
     dispatch({
@@ -24,6 +28,136 @@ function getUsers() {
         return response.json().then(function (json) {
           dispatch({
             type: 'GET_USERS_FAILURE',
+            messages: Array.isArray(json) ? json : [json]
+          });
+        });
+      }
+    });
+  };
+}
+
+function updateSettings(meetingPoints, socialPoints, token) {
+  return function (dispatch) {
+    dispatch({
+      type: 'CLEAR_MESSAGES'
+    });
+    return fetch('/api/settings', {
+      method: 'put',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        socialPoints: socialPoints,
+        meetingPoints: meetingPoints,
+        token: token
+      })
+    }).then(function (response) {
+      if (response.ok) {
+        return response.json().then(function (json) {
+          dispatch({
+            type: 'UPDATE_SETTINGS_SUCCESS',
+            messages: Array.isArray(json) ? json : [json]
+          });
+        });
+      } else {
+        return response.json().then(function (json) {
+          dispatch({
+            type: 'UPDATE_SETTINGS_FAILURE',
+            messages: Array.isArray(json) ? json : [json]
+          });
+        });
+      }
+    });
+  };
+}
+
+function getSettings(token) {
+  return function (dispatch) {
+    dispatch({
+      type: 'CLEAR_MESSAGES'
+    });
+    return fetch('/api/settings', {
+      method: 'get',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    }).then(function (response) {
+      if (response.ok) {
+        return response.json().then(function (json) {
+          dispatch({
+            type: 'GET_SETTINGS_SUCCESS',
+            settings: json.settings
+          });
+        });
+      } else {
+        return response.json().then(function (json) {
+          dispatch({
+            type: 'GET_SETTINGS_FAILURE',
+            messages: Array.isArray(json) ? json : [json]
+          });
+        });
+      }
+    });
+  };
+}
+
+function openCheckin(event, token) {
+  return function (dispatch) {
+    dispatch({
+      type: 'CLEAR_MESSAGES'
+    });
+    return fetch('/api/settings', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        event: event
+      })
+    }).then(function (response) {
+      if (response.ok) {
+        return response.json().then(function (json) {
+          dispatch({
+            type: 'OPEN_CHECKIN_SUCCESS',
+            settings: json.settings
+          });
+        });
+      } else {
+        return response.json().then(function (json) {
+          dispatch({
+            type: 'OPEN_CHECKIN_FAIL',
+            messages: Array.isArray(json) ? json : [json]
+          });
+        });
+      }
+    });
+  };
+}
+
+function closeCheckin(token) {
+  return function (dispatch) {
+    dispatch({
+      type: 'CLEAR_MESSAGES'
+    });
+    return fetch('/api/settings', {
+      method: 'delete',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    }).then(function (response) {
+      if (response.ok) {
+        return response.json().then(function (json) {
+          dispatch({
+            type: 'CLOSE_CHECKIN_SUCCESS',
+            settings: json.settings
+          });
+        });
+      } else {
+        return response.json().then(function (json) {
+          dispatch({
+            type: 'CLOSE_CHECKIN_FAIL',
             messages: Array.isArray(json) ? json : [json]
           });
         });
@@ -1063,7 +1197,7 @@ var Profile = function (_get__$Component) {
       firstName: props.user.firstName || '',
       lastName: props.user.lastName || '',
       slackUsername: props.user.slackUsername || '',
-      checkins: props.user.checkins || 0,
+      meetingPoints: props.user.meetingPoints || 0,
       admin: props.user.admin || false,
       password: '',
       confirm: ''
@@ -1240,7 +1374,7 @@ var Profile = function (_get__$Component) {
                   _react2.default.createElement(
                     'th',
                     null,
-                    'Checkins'
+                    'Points from Meetings'
                   )
                 )
               ),
@@ -1258,7 +1392,7 @@ var Profile = function (_get__$Component) {
                   _react2.default.createElement(
                     'td',
                     null,
-                    this.state.checkins
+                    this.state.meetingPoints
                   )
                 )
               )
@@ -2151,6 +2285,8 @@ var _Messages = require('../Messages');
 
 var _Messages2 = _interopRequireDefault(_Messages);
 
+var _admin = require('../../actions/admin');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -2169,11 +2305,30 @@ var Settings = function (_get__$Component) {
 
     var _this = _possibleConstructorReturn(this, (Settings.__proto__ || Object.getPrototypeOf(Settings)).call(this, props));
 
-    _this.state = {};
+    _this.state = {
+      meetingPoints: props.admin.settings.meetingPoints || 0,
+      socialPoints: props.admin.settings.socialPoints || 0,
+      meetingOpen: props.admin.settings.openMeeting || 0,
+      socialOpen: props.admin.settings.openSocial || 0
+    };
     return _this;
   }
 
   _createClass(Settings, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      this.props.dispatch(_get__('getSettings')()).then(function () {
+        _this2.setState({
+          meetingPoints: _this2.props.admin.settings.meetingPoints,
+          socialPoints: _this2.props.admin.settings.socialPoints,
+          meetingOpen: _this2.props.admin.settings.meetingOpen,
+          socialOpen: _this2.props.admin.settings.socialOpen
+        });
+      });
+    }
+  }, {
     key: 'handleChange',
     value: function handleChange(event) {
       this.setState(_defineProperty({}, event.target.name, event.target.value));
@@ -2181,51 +2336,195 @@ var Settings = function (_get__$Component) {
   }, {
     key: 'handleOpenMeeting',
     value: function handleOpenMeeting(event) {
+      var _this3 = this;
+
       event.preventDefault();
+      this.props.dispatch(_get__('openCheckin')("meeting", this.props.user.token)).then(function () {
+        _this3.setState({
+          meetingOpen: _this3.props.admin.settings.meetingOpen,
+          socialOpen: _this3.props.admin.settings.socialOpen
+        });
+      });
+    }
+  }, {
+    key: 'handleOpenSocial',
+    value: function handleOpenSocial(event) {
+      var _this4 = this;
+
+      event.preventDefault();
+      this.props.dispatch(_get__('openCheckin')("social", this.props.user.token)).then(function () {
+        _this4.setState({
+          meetingOpen: _this4.props.admin.settings.meetingOpen,
+          socialOpen: _this4.props.admin.settings.socialOpen
+        });
+      });
+    }
+  }, {
+    key: 'handleCloseCheckin',
+    value: function handleCloseCheckin(event) {
+      var _this5 = this;
+
+      event.preventDefault();
+      this.props.dispatch(_get__('closeCheckin')(this.props.user.token)).then(function () {
+        _this5.setState({
+          meetingOpen: _this5.props.admin.settings.meetingOpen,
+          socialOpen: _this5.props.admin.settings.socialOpen
+        });
+      });
+    }
+  }, {
+    key: 'handleUpdateSettings',
+    value: function handleUpdateSettings(event) {
+      event.preventDefault();
+      this.props.dispatch(_get__('updateSettings')(this.state.meetingPoints, this.state.socialPoints, this.props.token));
     }
   }, {
     key: 'render',
     value: function render() {
-      var _Messages_Component = _get__('Messages');
+      var toRender;
+      if (this.state.socialOpen || this.state.meetingOpen) {
+        var _Messages_Component3 = _get__('Messages');
 
+        toRender = _react2.default.createElement(
+          'div',
+          { className: 'panel-body' },
+          _react2.default.createElement(_Messages_Component3, { messages: this.props.messages }),
+          _react2.default.createElement(
+            'legend',
+            null,
+            'Close Checkin System'
+          ),
+          _react2.default.createElement(
+            'form',
+            { onSubmit: this.handleCloseCheckin.bind(this), className: 'form-horizontal' },
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group' },
+              _react2.default.createElement(
+                'div',
+                { className: 'col-sm-offset-3 col-sm-9' },
+                _react2.default.createElement(
+                  'button',
+                  { type: 'submit', className: 'btn btn-danger' },
+                  'Close Checkin'
+                )
+              )
+            )
+          )
+        );
+      } else {
+        var _Messages_Component4 = _get__('Messages');
+
+        toRender = _react2.default.createElement(
+          'div',
+          { className: 'panel-body' },
+          _react2.default.createElement(_Messages_Component4, { messages: this.props.messages }),
+          _react2.default.createElement(
+            'legend',
+            null,
+            'Open Checkin System'
+          ),
+          _react2.default.createElement(
+            'form',
+            { onSubmit: this.handleOpenMeeting.bind(this), className: 'form-horizontal' },
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group' },
+              _react2.default.createElement(
+                'div',
+                { className: 'col-sm-offset-3 col-sm-8' },
+                _react2.default.createElement(
+                  'button',
+                  { type: 'submit', className: 'btn btn-primary' },
+                  'Open Meeting'
+                )
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'form',
+            { onSubmit: this.handleOpenSocial.bind(this), className: 'form-horizontal' },
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group' },
+              _react2.default.createElement(
+                'div',
+                { className: 'col-sm-offset-3 col-sm-8' },
+                _react2.default.createElement(
+                  'button',
+                  { type: 'submit', className: 'btn btn-primary' },
+                  'Open Social'
+                )
+              )
+            )
+          )
+        );
+      }
       return _react2.default.createElement(
         'div',
         { className: 'container' },
         _react2.default.createElement(
           'div',
           { className: 'panel' },
+          toRender
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'panel' },
           _react2.default.createElement(
             'div',
             { className: 'panel-body' },
-            _react2.default.createElement(_Messages_Component, { messages: this.props.messages }),
             _react2.default.createElement(
               'form',
-              { onSubmit: this.handleOpenMeeting.bind(this), className: 'form-horizontal' },
+              { onSubmit: this.handleUpdateSettings.bind(this), className: 'form-horizontal' },
               _react2.default.createElement(
                 'legend',
                 null,
-                'Open Checkin'
+                'Change Point Values'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'form-group' },
+                _react2.default.createElement(
+                  'label',
+                  { htmlFor: 'password', className: 'col-sm-3' },
+                  'Meetings'
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'col-sm-7' },
+                  _react2.default.createElement('input', { type: 'text', name: 'meetingPoints', id: 'meetingPoints', className: 'form-control', value: this.state.meetingPoints, onChange: this.handleChange.bind(this) })
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'form-group' },
+                _react2.default.createElement(
+                  'label',
+                  { htmlFor: 'confirm', className: 'col-sm-3' },
+                  'Socials'
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'col-sm-7' },
+                  _react2.default.createElement('input', { type: 'text', name: 'socialPoints', id: 'socialPoints', className: 'form-control', value: this.state.socialPoints, onChange: this.handleChange.bind(this) })
+                )
               ),
               _react2.default.createElement(
                 'div',
                 { className: 'form-group' },
                 _react2.default.createElement(
                   'div',
-                  { className: 'col-sm-offset-3 col-sm-8' },
+                  { className: 'col-sm-4 col-sm-offset-3' },
                   _react2.default.createElement(
                     'button',
                     { type: 'submit', className: 'btn btn-primary' },
-                    'Open Meeting'
+                    'Update'
                   )
                 )
               )
             )
           )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'panel' },
-          _react2.default.createElement('div', { className: 'panel-body' })
         )
       );
     }
@@ -2272,6 +2571,18 @@ function _get__(variableName) {
 
 function _get_original__(variableName) {
   switch (variableName) {
+    case 'getSettings':
+      return _admin.getSettings;
+
+    case 'openCheckin':
+      return _admin.openCheckin;
+
+    case 'closeCheckin':
+      return _admin.closeCheckin;
+
+    case 'updateSettings':
+      return _admin.updateSettings;
+
     case 'Messages':
       return _Messages2.default;
 
@@ -2384,7 +2695,7 @@ exports.__set__ = _set__;
 exports.__ResetDependency__ = _reset__;
 exports.__RewireAPI__ = _RewireAPI__;
 
-},{"../Messages":15,"react":290,"react-redux":104}],10:[function(require,module,exports){
+},{"../../actions/admin":1,"../Messages":15,"react":290,"react-redux":104}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2436,7 +2747,7 @@ var Users = function (_get__$Component) {
       firstName: props.user.firstName || '',
       lastName: props.user.lastName || '',
       slackUsername: props.user.slackUsername || '',
-      checkins: props.user.checkins || 0,
+      meetingPoints: props.user.meetingPoints || 0,
       admin: props.user.admin || false
     };
     return _this;
@@ -2468,8 +2779,8 @@ var Users = function (_get__$Component) {
         Header: 'email',
         accessor: 'email'
       }, {
-        Header: 'checkins',
-        accessor: 'checkins'
+        Header: 'meetingPoints',
+        accessor: 'meetingPoints'
       }, {
         Header: 'slackUsername',
         accessor: 'slackUsername'
@@ -4234,7 +4545,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = admin;
 var initialState = {
-  userList: []
+  userList: [],
+  settings: {}
 };
 
 function admin() {
@@ -4248,6 +4560,12 @@ function admin() {
     case 'GET_USERS_SUCCESS':
       return Object.assign({}, state, {
         userList: action.users
+      });
+    case 'GET_SETTINGS_SUCCESS':
+    case 'OPEN_CHECKIN_SUCCESS':
+    case 'CLOSE_CHECKIN_SUCCESS':
+      return Object.assign({}, state, {
+        settings: action.settings
       });
     default:
       return state;
@@ -4731,6 +5049,8 @@ function messages() {
     case 'RESET_PASSWORD_FAILURE':
     case 'CHECKIN_FAILURE':
     case 'GET_USERS_FAILURE':
+    case 'GET_SETTINGS_FAILURE':
+    case 'UPDATE_SETTINGS_FAILURE':
       return {
         error: action.messages
       };
@@ -4739,6 +5059,7 @@ function messages() {
     case 'RESET_PASSWORD_SUCCESS':
     case 'CONTACT_FORM_SUCCESS':
     case 'CHECKIN_SUCCESS':
+    case 'UPDATE_SETTINGS_SUCCESS':
       return {
         success: action.messages
       };
@@ -7242,112 +7563,7 @@ function isFSA(action) {
 function isError(action) {
   return action.error === true;
 }
-},{"lodash.isplainobject":57}],57:[function(require,module,exports){
-/**
- * lodash 3.2.0 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-var baseFor = require('lodash._basefor'),
-    isArguments = require('lodash.isarguments'),
-    keysIn = require('lodash.keysin');
-
-/** `Object#toString` result references. */
-var objectTag = '[object Object]';
-
-/**
- * Checks if `value` is object-like.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- */
-function isObjectLike(value) {
-  return !!value && typeof value == 'object';
-}
-
-/** Used for native method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
- * of values.
- */
-var objToString = objectProto.toString;
-
-/**
- * The base implementation of `_.forIn` without support for callback
- * shorthands and `this` binding.
- *
- * @private
- * @param {Object} object The object to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Object} Returns `object`.
- */
-function baseForIn(object, iteratee) {
-  return baseFor(object, iteratee, keysIn);
-}
-
-/**
- * Checks if `value` is a plain object, that is, an object created by the
- * `Object` constructor or one with a `[[Prototype]]` of `null`.
- *
- * **Note:** This method assumes objects created by the `Object` constructor
- * have no inherited enumerable properties.
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- * }
- *
- * _.isPlainObject(new Foo);
- * // => false
- *
- * _.isPlainObject([1, 2, 3]);
- * // => false
- *
- * _.isPlainObject({ 'x': 0, 'y': 0 });
- * // => true
- *
- * _.isPlainObject(Object.create(null));
- * // => true
- */
-function isPlainObject(value) {
-  var Ctor;
-
-  // Exit early for non `Object` objects.
-  if (!(isObjectLike(value) && objToString.call(value) == objectTag && !isArguments(value)) ||
-      (!hasOwnProperty.call(value, 'constructor') && (Ctor = value.constructor, typeof Ctor == 'function' && !(Ctor instanceof Ctor)))) {
-    return false;
-  }
-  // IE < 9 iterates inherited properties before own properties. If the first
-  // iterated property is an object's own property then there are no inherited
-  // enumerable properties.
-  var result;
-  // In most environments an object's own properties are iterated before
-  // its inherited properties. If the last iterated property is an object's
-  // own property then there are no inherited enumerable properties.
-  baseForIn(value, function(subValue, key) {
-    result = key;
-  });
-  return result === undefined || hasOwnProperty.call(value, result);
-}
-
-module.exports = isPlainObject;
-
-},{"lodash._basefor":77,"lodash.isarguments":78,"lodash.keysin":80}],58:[function(require,module,exports){
+},{"lodash.isplainobject":79}],57:[function(require,module,exports){
 /**
  * Indicates that navigation was caused by a call to history.push.
  */
@@ -7379,7 +7595,7 @@ exports['default'] = {
   REPLACE: REPLACE,
   POP: POP
 };
-},{}],59:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -7438,7 +7654,7 @@ function loopAsync(turns, work, callback) {
 
   next();
 }
-},{}],60:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 (function (process){
 /*eslint-disable no-empty */
 'use strict';
@@ -7515,7 +7731,7 @@ function readState(key) {
 }
 }).call(this,require('_process'))
 
-},{"_process":93,"warning":74}],61:[function(require,module,exports){
+},{"_process":93,"warning":73}],60:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -7591,13 +7807,13 @@ function supportsGoWithoutReloadUsingHash() {
   var ua = navigator.userAgent;
   return ua.indexOf('Firefox') === -1;
 }
-},{}],62:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
 var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 exports.canUseDOM = canUseDOM;
-},{}],63:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -7648,7 +7864,7 @@ function parsePath(path) {
 }
 }).call(this,require('_process'))
 
-},{"_process":93,"warning":74}],64:[function(require,module,exports){
+},{"_process":93,"warning":73}],63:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -7832,7 +8048,7 @@ exports['default'] = createBrowserHistory;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./Actions":58,"./DOMStateStorage":60,"./DOMUtils":61,"./ExecutionEnvironment":62,"./PathUtils":63,"./createDOMHistory":65,"_process":93,"invariant":76}],65:[function(require,module,exports){
+},{"./Actions":57,"./DOMStateStorage":59,"./DOMUtils":60,"./ExecutionEnvironment":61,"./PathUtils":62,"./createDOMHistory":64,"_process":93,"invariant":75}],64:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -7876,7 +8092,7 @@ exports['default'] = createDOMHistory;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./DOMUtils":61,"./ExecutionEnvironment":62,"./createHistory":67,"_process":93,"invariant":76}],66:[function(require,module,exports){
+},{"./DOMUtils":60,"./ExecutionEnvironment":61,"./createHistory":66,"_process":93,"invariant":75}],65:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -8126,7 +8342,7 @@ exports['default'] = createHashHistory;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./Actions":58,"./DOMStateStorage":60,"./DOMUtils":61,"./ExecutionEnvironment":62,"./PathUtils":63,"./createDOMHistory":65,"_process":93,"invariant":76,"warning":74}],67:[function(require,module,exports){
+},{"./Actions":57,"./DOMStateStorage":59,"./DOMUtils":60,"./ExecutionEnvironment":61,"./PathUtils":62,"./createDOMHistory":64,"_process":93,"invariant":75,"warning":73}],66:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -8418,7 +8634,7 @@ exports['default'] = createHistory;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./Actions":58,"./AsyncUtils":59,"./PathUtils":63,"./createLocation":68,"./deprecate":70,"./runTransitionHook":71,"_process":93,"deep-equal":27,"warning":74}],68:[function(require,module,exports){
+},{"./Actions":57,"./AsyncUtils":58,"./PathUtils":62,"./createLocation":67,"./deprecate":69,"./runTransitionHook":70,"_process":93,"deep-equal":27,"warning":73}],67:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -8473,7 +8689,7 @@ exports['default'] = createLocation;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./Actions":58,"./PathUtils":63,"_process":93,"warning":74}],69:[function(require,module,exports){
+},{"./Actions":57,"./PathUtils":62,"_process":93,"warning":73}],68:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -8631,7 +8847,7 @@ exports['default'] = createMemoryHistory;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./Actions":58,"./PathUtils":63,"./createHistory":67,"_process":93,"invariant":76,"warning":74}],70:[function(require,module,exports){
+},{"./Actions":57,"./PathUtils":62,"./createHistory":66,"_process":93,"invariant":75,"warning":73}],69:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -8654,7 +8870,7 @@ exports['default'] = deprecate;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"_process":93,"warning":74}],71:[function(require,module,exports){
+},{"_process":93,"warning":73}],70:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -8682,7 +8898,7 @@ exports['default'] = runTransitionHook;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"_process":93,"warning":74}],72:[function(require,module,exports){
+},{"_process":93,"warning":73}],71:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -8844,7 +9060,7 @@ exports['default'] = useBasename;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./ExecutionEnvironment":62,"./PathUtils":63,"./deprecate":70,"./runTransitionHook":71,"_process":93,"warning":74}],73:[function(require,module,exports){
+},{"./ExecutionEnvironment":61,"./PathUtils":62,"./deprecate":69,"./runTransitionHook":70,"_process":93,"warning":73}],72:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -9024,7 +9240,7 @@ exports['default'] = useQueries;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./PathUtils":63,"./deprecate":70,"./runTransitionHook":71,"_process":93,"query-string":99,"warning":74}],74:[function(require,module,exports){
+},{"./PathUtils":62,"./deprecate":69,"./runTransitionHook":70,"_process":93,"query-string":99,"warning":73}],73:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -9089,7 +9305,7 @@ module.exports = warning;
 
 }).call(this,require('_process'))
 
-},{"_process":93}],75:[function(require,module,exports){
+},{"_process":93}],74:[function(require,module,exports){
 /**
  * Copyright 2015, Yahoo! Inc.
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
@@ -9141,7 +9357,7 @@ module.exports = function hoistNonReactStatics(targetComponent, sourceComponent,
     return targetComponent;
 };
 
-},{}],76:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -9195,7 +9411,7 @@ module.exports = invariant;
 
 }).call(this,require('_process'))
 
-},{"_process":93}],77:[function(require,module,exports){
+},{"_process":93}],76:[function(require,module,exports){
 /**
  * lodash 3.0.3 (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -9245,7 +9461,7 @@ function createBaseFor(fromRight) {
 
 module.exports = baseFor;
 
-},{}],78:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -9476,7 +9692,7 @@ function isObjectLike(value) {
 
 module.exports = isArguments;
 
-},{}],79:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 /**
  * lodash 3.0.4 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -9658,7 +9874,112 @@ function isNative(value) {
 
 module.exports = isArray;
 
-},{}],80:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
+/**
+ * lodash 3.2.0 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+var baseFor = require('lodash._basefor'),
+    isArguments = require('lodash.isarguments'),
+    keysIn = require('lodash.keysin');
+
+/** `Object#toString` result references. */
+var objectTag = '[object Object]';
+
+/**
+ * Checks if `value` is object-like.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
+}
+
+/** Used for native method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objToString = objectProto.toString;
+
+/**
+ * The base implementation of `_.forIn` without support for callback
+ * shorthands and `this` binding.
+ *
+ * @private
+ * @param {Object} object The object to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Object} Returns `object`.
+ */
+function baseForIn(object, iteratee) {
+  return baseFor(object, iteratee, keysIn);
+}
+
+/**
+ * Checks if `value` is a plain object, that is, an object created by the
+ * `Object` constructor or one with a `[[Prototype]]` of `null`.
+ *
+ * **Note:** This method assumes objects created by the `Object` constructor
+ * have no inherited enumerable properties.
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ * }
+ *
+ * _.isPlainObject(new Foo);
+ * // => false
+ *
+ * _.isPlainObject([1, 2, 3]);
+ * // => false
+ *
+ * _.isPlainObject({ 'x': 0, 'y': 0 });
+ * // => true
+ *
+ * _.isPlainObject(Object.create(null));
+ * // => true
+ */
+function isPlainObject(value) {
+  var Ctor;
+
+  // Exit early for non `Object` objects.
+  if (!(isObjectLike(value) && objToString.call(value) == objectTag && !isArguments(value)) ||
+      (!hasOwnProperty.call(value, 'constructor') && (Ctor = value.constructor, typeof Ctor == 'function' && !(Ctor instanceof Ctor)))) {
+    return false;
+  }
+  // IE < 9 iterates inherited properties before own properties. If the first
+  // iterated property is an object's own property then there are no inherited
+  // enumerable properties.
+  var result;
+  // In most environments an object's own properties are iterated before
+  // its inherited properties. If the last iterated property is an object's
+  // own property then there are no inherited enumerable properties.
+  baseForIn(value, function(subValue, key) {
+    result = key;
+  });
+  return result === undefined || hasOwnProperty.call(value, result);
+}
+
+module.exports = isPlainObject;
+
+},{"lodash._basefor":76,"lodash.isarguments":77,"lodash.keysin":80}],80:[function(require,module,exports){
 /**
  * lodash 3.0.8 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -9792,7 +10113,7 @@ function keysIn(object) {
 
 module.exports = keysIn;
 
-},{"lodash.isarguments":78,"lodash.isarray":79}],81:[function(require,module,exports){
+},{"lodash.isarguments":77,"lodash.isarray":78}],81:[function(require,module,exports){
 var root = require('./_root');
 
 /** Built-in value references. */
@@ -16181,7 +16502,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps) {
 }
 }).call(this,require('_process'))
 
-},{"../utils/shallowEqual":105,"../utils/storeShape":106,"../utils/wrapActionCreators":107,"_process":93,"hoist-non-react-statics":75,"invariant":76,"lodash/isPlainObject":90,"react":290}],104:[function(require,module,exports){
+},{"../utils/shallowEqual":105,"../utils/storeShape":106,"../utils/wrapActionCreators":107,"_process":93,"hoist-non-react-statics":74,"invariant":75,"lodash/isPlainObject":90,"react":290}],104:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -16469,7 +16790,7 @@ exports.default = IndexRedirect;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./InternalPropTypes":113,"./Redirect":118,"./routerWarning":142,"_process":93,"invariant":76,"react":290}],112:[function(require,module,exports){
+},{"./InternalPropTypes":113,"./Redirect":118,"./routerWarning":142,"_process":93,"invariant":75,"react":290}],112:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -16533,7 +16854,7 @@ exports.default = IndexRoute;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./InternalPropTypes":113,"./RouteUtils":121,"./routerWarning":142,"_process":93,"invariant":76,"react":290}],113:[function(require,module,exports){
+},{"./InternalPropTypes":113,"./RouteUtils":121,"./routerWarning":142,"_process":93,"invariant":75,"react":290}],113:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -16638,7 +16959,7 @@ exports.default = Lifecycle;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./routerWarning":142,"_process":93,"invariant":76,"react":290}],115:[function(require,module,exports){
+},{"./routerWarning":142,"_process":93,"invariant":75,"react":290}],115:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -16818,7 +17139,7 @@ exports.default = Link;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./PropTypes":117,"./routerWarning":142,"_process":93,"invariant":76,"react":290}],116:[function(require,module,exports){
+},{"./PropTypes":117,"./routerWarning":142,"_process":93,"invariant":75,"react":290}],116:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -17034,7 +17355,7 @@ function formatPattern(pattern, params) {
 }
 }).call(this,require('_process'))
 
-},{"_process":93,"invariant":76}],117:[function(require,module,exports){
+},{"_process":93,"invariant":75}],117:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -17245,7 +17566,7 @@ exports.default = Redirect;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./InternalPropTypes":113,"./PatternUtils":116,"./RouteUtils":121,"_process":93,"invariant":76,"react":290}],119:[function(require,module,exports){
+},{"./InternalPropTypes":113,"./PatternUtils":116,"./RouteUtils":121,"_process":93,"invariant":75,"react":290}],119:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -17306,7 +17627,7 @@ exports.default = Route;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./InternalPropTypes":113,"./RouteUtils":121,"_process":93,"invariant":76,"react":290}],120:[function(require,module,exports){
+},{"./InternalPropTypes":113,"./RouteUtils":121,"_process":93,"invariant":75,"react":290}],120:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -17677,7 +17998,7 @@ exports.default = Router;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./InternalPropTypes":113,"./RouteUtils":121,"./RouterContext":123,"./RouterUtils":124,"./createTransitionManager":132,"./routerWarning":142,"_process":93,"history/lib/createHashHistory":66,"history/lib/useQueries":73,"invariant":76,"react":290}],123:[function(require,module,exports){
+},{"./InternalPropTypes":113,"./RouteUtils":121,"./RouterContext":123,"./RouterUtils":124,"./createTransitionManager":132,"./routerWarning":142,"_process":93,"history/lib/createHashHistory":65,"history/lib/useQueries":72,"invariant":75,"react":290}],123:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -17837,7 +18158,7 @@ exports.default = RouterContext;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./RouteUtils":121,"./deprecateObjectProperties":133,"./getRouteParams":135,"./routerWarning":142,"_process":93,"invariant":76,"react":290}],124:[function(require,module,exports){
+},{"./RouteUtils":121,"./deprecateObjectProperties":133,"./getRouteParams":135,"./routerWarning":142,"_process":93,"invariant":75,"react":290}],124:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -18111,7 +18432,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = (0, _createRouterHistory2.default)(_createBrowserHistory2.default);
 module.exports = exports['default'];
-},{"./createRouterHistory":131,"history/lib/createBrowserHistory":64}],129:[function(require,module,exports){
+},{"./createRouterHistory":131,"history/lib/createBrowserHistory":63}],129:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -18222,7 +18543,7 @@ function createMemoryHistory(options) {
   return history;
 }
 module.exports = exports['default'];
-},{"history/lib/createMemoryHistory":69,"history/lib/useBasename":72,"history/lib/useQueries":73}],131:[function(require,module,exports){
+},{"history/lib/createMemoryHistory":68,"history/lib/useBasename":71,"history/lib/useQueries":72}],131:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -18718,7 +19039,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = (0, _createRouterHistory2.default)(_createHashHistory2.default);
 module.exports = exports['default'];
-},{"./createRouterHistory":131,"history/lib/createHashHistory":66}],137:[function(require,module,exports){
+},{"./createRouterHistory":131,"history/lib/createHashHistory":65}],137:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19168,7 +19489,7 @@ exports.default = match;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./RouteUtils":121,"./RouterUtils":124,"./createMemoryHistory":130,"./createTransitionManager":132,"_process":93,"history/lib/Actions":58,"invariant":76}],141:[function(require,module,exports){
+},{"./RouteUtils":121,"./RouterUtils":124,"./createMemoryHistory":130,"./createTransitionManager":132,"_process":93,"history/lib/Actions":57,"invariant":75}],141:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -19484,7 +19805,7 @@ function useRouterHistory(createHistory) {
   };
 }
 module.exports = exports['default'];
-},{"history/lib/useBasename":72,"history/lib/useQueries":73}],144:[function(require,module,exports){
+},{"history/lib/useBasename":71,"history/lib/useQueries":72}],144:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -19539,7 +19860,7 @@ exports.default = useRoutes;
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./createTransitionManager":132,"./routerWarning":142,"_process":93,"history/lib/useQueries":73}],145:[function(require,module,exports){
+},{"./createTransitionManager":132,"./routerWarning":142,"_process":93,"history/lib/useQueries":72}],145:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -19607,7 +19928,7 @@ function withRouter(WrappedComponent, options) {
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"./PropTypes":117,"_process":93,"hoist-non-react-statics":75,"invariant":76,"react":290}],146:[function(require,module,exports){
+},{"./PropTypes":117,"_process":93,"hoist-non-react-statics":74,"invariant":75,"react":290}],146:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

@@ -9,9 +9,6 @@
     "postinstall": "npm run build:production",
     "start": "node server.js",
     "nodemon": "nodemon server.js",
-    "test": "npm run test:client && npm run test:server",
-    "test:client": "mocha test/client --recursive --compilers js:babel-register",
-    "test:server": "mocha test/server --recursive --compilers js:babel-register",
     "watch": "gulp",
     "watchify": "gulp watchify"
   },
@@ -45,6 +42,7 @@
     "mongoose": "^4.4.8",
     "morgan": "^1.7.0",
     "nodemailer": "^2.3.0",
+    "prop-types": "^15.6.1",
     "react": "15.1.0",
     "react-cookie": "^0.4.5",
     "react-dom": "15.1.0",
@@ -65,15 +63,6 @@
   },
   "devDependencies": {
     "babel-plugin-rewire": "1.0.0-rc-3",
-    "babel-register": "^6.8.0",
-    "chai": "^3.5.0",
-    "enzyme": "^2.3.0",
-    "fetch-mock": "3.0.2",
-    "mocha": "^2.4.5",
-    "react-addons-test-utils": "^15.0.2",
-    "redux-mock-store": "^1.0.2",
-    "sinon": "^1.17.3",
-    "sinon-chai": "^2.8.0",
-    "supertest": "^1.2.0"
+    "babel-register": "^6.8.0"
   }
 }

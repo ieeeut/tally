@@ -5,15 +5,31 @@
   "env": {
     "NODE_ENV": {
       "description": "dev or production",
-      "value": "dev"
+      "value": "production"
+    },
+    "ADMIN_EMAIL": {
+      "description": "Default admin user email",
+      "generator": "comms@ieeeut.org"
+    },
+    "ADMIN_PASS": {
+      "description": "Default admin user password",
+      "generator": "hunter2"
     },
     "TOKEN_SECRET": {
       "description": "Long random string used to verify JWT tokens for user authentication",
       "generator": "secret"
     },
+    "MAILGUN_USERNAME": {
+      "description": "Username to access mailgun api",
+      "value": "postmaster@sandbox67c118365e564798a8864434e4b2a3cb.mailgun.org"
+    },
+    "MAILGUN_PASSWORD": {
+      "description": "Password to access mailgun api",
+      "value": "ed49d942fd9e6c11208ee3aacb29df9d"
+    },
     "ROOT_URL": {
       "description": "Root URL for your registration system",
-      "value": "http://ieeeut-tally.herokuapp.com:3000"
+      "value": "http://ieeeut-tally.herokuapp.com"
     }
   },
   "addons": [

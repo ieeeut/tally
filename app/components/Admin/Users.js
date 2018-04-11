@@ -14,7 +14,7 @@ class Users extends React.Component {
       firstName: props.user.firstName || '',
       lastName: props.user.lastName || '',
       slackUsername: props.user.slackUsername || '',
-      checkins: props.user.checkins || 0,
+      meetingPoints: props.user.meetingPoints || 0,
       admin: props.user.admin || false,
     };
   }
@@ -41,8 +41,8 @@ class Users extends React.Component {
       Header: 'email',
       accessor: 'email'
     }, {
-      Header: 'checkins',
-      accessor: 'checkins'
+      Header: 'meetingPoints',
+      accessor: 'meetingPoints'
     }, {
       Header: 'slackUsername',
       accessor: 'slackUsername'
