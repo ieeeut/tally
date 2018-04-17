@@ -9,15 +9,15 @@
     },
     "ADMIN_EMAIL": {
       "description": "Default admin user email",
-      "generator": "comms@ieeeut.org"
+      "value": "comms@ieeeut.org"
     },
     "ADMIN_PASS": {
       "description": "Default admin user password",
-      "generator": "hunter2"
+      "value": "hunter2"
     },
     "TOKEN_SECRET": {
       "description": "Long random string used to verify JWT tokens for user authentication",
-      "generator": "490b7325e38f432ab9e1f8b52640d41b20ffdb424a23ce07735efb50af52bd70"
+      "value": "secret"
     },
     "MAILGUN_USERNAME": {
       "description": "Username to access mailgun api",
