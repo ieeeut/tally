@@ -17,7 +17,7 @@
     },
     "TOKEN_SECRET": {
       "description": "Long random string used to verify JWT tokens for user authentication",
-      "generator": "secret"
+      "generator": "490b7325e38f432ab9e1f8b52640d41b20ffdb424a23ce07735efb50af52bd70"
     },
     "MAILGUN_USERNAME": {
       "description": "Username to access mailgun api",
@@ -28,7 +28,7 @@
       "value": "ed49d942fd9e6c11208ee3aacb29df9d"
     },
     "ROOT_URL": {
-      "description": "Root URL for your registration system",
+      "description": "Root URL for your system",
       "value": "http://ieeeut-tally.herokuapp.com"
     }
   },
