@@ -9,7 +9,6 @@ export function checkin(eid) {
       body: JSON.stringify({ eid: eid})
     }).then((response) => {
       return response.json().then((json) => {
-        console.log(json);
         if (response.ok) {
           dispatch({
             type: 'CHECKIN_SUCCESS',
