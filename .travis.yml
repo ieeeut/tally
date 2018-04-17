@@ -1,22 +1,19 @@
 language: node_js
-
 node_js:
-  - "8"
-
+- '8'
 sudo: false
-
 branches:
-   only:
-   - master
-
+  only:
+  - master
 before_install:
-  - curl -o- -L https://yarnpkg.com/install.sh | bash
-  - export PATH="$HOME/.yarn/bin:$PATH"
-
+- curl -o- -L https://yarnpkg.com/install.sh | bash
+- export PATH="$HOME/.yarn/bin:$PATH"
 cache:
   yarn: true
   directories:
-    - "node_modules"
-
+  - node_modules
 script:
-  - yarn run test
+- yarn run test
+notifications:
+  slack:
+    secure: k7jGp7dvRDa4zJN788odzIM3X4Aowx0Mpgntd4v9UwfrLVusIGg0bXv0eiPh/Abjw+IukKCONWIbcafyxL7zt9jJak6APZmPv2wFUE8eGvEEEouniZQu7vtlt5M8wC+XBhZMSI58GVQKKRxhb+zQj05t/xdxtaSVAbfxW6tSn1b1P6YTQUwluqyyHWSqrjFp2W8TNs9oaPi65MKgRo7R8T+rFZa9rItyd1r4/Ec+Ls+KClMgWiJOP+7FhX0NAwP2wWPeVdJWKhPbnc3WwylTkR0n/zjLJ2vSqhEWnn2Iv3PSk1DUR2foPtl4VbLVnmfnVgsaksIFam3htQ15kMoaGoTQiepDJ8+/xInsKVdc8r+RMfTqKZfwshr28brXO0HA1mjTPP4SPRka7cPvSAgQ8nH5ytVonbr2lKwQPkImcfWQKNRATRDVeUWY41XxYpZBMTLJqnwp4biC7pzmoiee9wiqPy7oR8vkUVPKsY5sZTOSKpIfDJXkUkn9OyKt9fDLNe14DhKzRRRnTvrm3yuk7WVNvcAoOUgbSjhzZwKLiKUz8vkDUCNfjlvA9wgxtQzSZc8r3/O0lwG7iF500CBkpixNzai4yAS/77ZNcgNWd4Xbpdhb5iCMLlKQmOkYhodp1Dw+3unWQCOS5I1zCugIxeaHQywkZtfp92yGBYIcXVQ=
