@@ -4,7 +4,7 @@
 > Source code for Tally, a check-in and member point aggregation system.
 
 [![Under Development](https://img.shields.io/badge/under-development-orange.svg)](https://github.com/ieeeut/tally)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/ieeeut/tally) [![Travis](https://img.shields.io/travis/cez-aug/github-project-boilerplate.svg)](https://github.com/ieeeut/tally)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/ieeeut/tally) [![Travis](https://travis-ci.org/ieeeut/tally.svg?branch=master)](https://github.com/ieeeut/tally)
 
 <br>
 
