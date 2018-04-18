@@ -29,3 +29,8 @@ bower_components
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Compiled source
+main.css
+bundle.js
+bundle.js.map
