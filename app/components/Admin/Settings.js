@@ -140,6 +140,7 @@ class Settings extends React.Component {
 const mapStateToProps = (state) => {
   return {
     messages: state.messages,
+    token: state.auth.token,
     user: state.auth.user,
     admin: state.admin
   };

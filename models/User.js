@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const bcrypt = require('bcrypt-nodejs');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 const schemaOptions = {
   timestamps: true,
