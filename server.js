@@ -86,6 +86,7 @@ app.post('/forgot', userController.forgotPost);
 app.post('/checkin', userController.checkin);
 app.post('/reset/:token', userController.resetPost);
 app.get('/api/users', userController.getAllUsers);
+app.get('/api/users/:slackUsername', userController.getUserBySlack);
 app.put('/api/settings', settingsController.settingsPut);
 app.get('/api/settings', settingsController.settingsGet);
 app.post('/api/settings', settingsController.settingsPost);

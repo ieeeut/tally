@@ -329,3 +329,15 @@ exports.getAllUsers = (req, res, next) => {
     return res.send({ users: users });
   });
 };
+
+/**
+ * GET /api/users/:slackUsername
+ */
+exports.getUserBySlack = (req, res, next) => {
+  User.find({slackUsername: req.params.slackUsername}, (err, users) => {
+
+    if (err) return res.status(400).send(err);
+    const user = users[0]
+    return res.send({ user });
+  });
+};
