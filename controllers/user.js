@@ -253,7 +253,7 @@ exports.forgotPost = (req, res, next) => {
       });
       const mailOptions = {
         to: user.email,
-        from: 'support@yourdomain.com',
+        from: 'support@tally.ieeeut.org',
         subject: '✔ Reset your password on Tally',
         text: 'You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n' +
         'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
@@ -305,7 +305,7 @@ exports.resetPost = (req, res, next) => {
         }
       });
       const mailOptions = {
-        from: 'support@yourdomain.com',
+        from: 'support@tally.ieeeut.org',
         to: user.email,
         subject: 'Your Tally password has been changed',
         text: 'Hello,\n\n' +
