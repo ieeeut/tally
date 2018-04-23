@@ -32,7 +32,7 @@ class Settings extends React.Component {
 
   handleOpenMeeting(event) {
     event.preventDefault();
-    this.props.dispatch(openCheckin("meeting", this.props.user.token)).then(() => {
+    this.props.dispatch(openCheckin("meeting", this.props.token)).then(() => {
       this.setState({
         meetingOpen: this.props.admin.settings.meetingOpen ,
         socialOpen: this.props.admin.settings.socialOpen
@@ -42,7 +42,7 @@ class Settings extends React.Component {
 
   handleOpenSocial(event) {
     event.preventDefault();
-    this.props.dispatch(openCheckin("social", this.props.user.token)).then(() => {
+    this.props.dispatch(openCheckin("social", this.props.token)).then(() => {
       this.setState({
         meetingOpen: this.props.admin.settings.meetingOpen ,
         socialOpen: this.props.admin.settings.socialOpen
@@ -52,7 +52,7 @@ class Settings extends React.Component {
 
   handleCloseCheckin(event) {
     event.preventDefault();
-    this.props.dispatch(closeCheckin(this.props.user.token)).then(() => {
+    this.props.dispatch(closeCheckin(this.props.token)).then(() => {
       this.setState({
         meetingOpen: this.props.admin.settings.meetingOpen,
         socialOpen: this.props.admin.settings.socialOpen

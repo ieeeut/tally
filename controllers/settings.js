@@ -8,6 +8,10 @@ const User = require('../models/User');
  * Open Checkin
  */
 exports.settingsPost = (req, res, next) => {
+  const token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
+  const _id = jwt.verify(token, process.env.TOKEN_SECRET).sub;
+
+
   User.findById(_id, (err, user) => {
     if (!user.admin) { return res.status(403).send("Nice try punk!"); }
 
@@ -38,6 +42,10 @@ exports.settingsPost = (req, res, next) => {
  * Close checkin
  */
 exports.settingsDelete = (req, res, next) => {
+  const token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
+  const _id = jwt.verify(token, process.env.TOKEN_SECRET).sub;
+
+
   User.findById(_id, (err, user) => {
     if (!user.admin) { return res.status(403).send("Nice try punk!"); }
 
